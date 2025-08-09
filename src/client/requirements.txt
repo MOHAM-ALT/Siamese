@@ -1,0 +1,8 @@
+websocket-client
+requests
+pyautogui
+pillow
+keyboard
+psutil
+opencv-python
+pytest

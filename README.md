@@ -1,509 +1,236 @@
-# Siamese
-# Siamese
-# 🤖 AI Control System - نظام التحكم الذكي عن بُعد
+# 🤖 AI Control System - Version 3.0 (Refactored)
 
 <div align="center">
 
-![Version](https://img.shields.io/badge/version-2.0-blue.svg)
-![Python](https://img.shields.io/badge/python-3.11+-green.svg)
+![Version](https://img.shields.io/badge/version-3.0-blue.svg)
+![Python](https://img.shields.io/badge/python-3.8+-green.svg)
 ![Status](https://img.shields.io/badge/status-active-success.svg)
 ![License](https://img.shields.io/badge/license-MIT-yellow.svg)
 
-**نظام متكامل للتحكم عن بُعد بالأجهزة باستخدام الذكاء الاصطناعي**
-
-[المميزات](#-المميزات) • [التثبيت](#-التثبيت) • [الاستخدام](#-الاستخدام) • [الأوامر](#-الأوامر) • [حل المشاكل](#-حل-المشاكل)
+**A professionally refactored, robust system for remote computer control using AI.**
 
 </div>
 
 ---
 
-## 📌 نظرة عامة
+## 📌 Overview
 
-نظام AI Control System هو حل متكامل للتحكم عن بُعد بأجهزة Windows باستخدام الذكاء الاصطناعي. يتكون من خادم (Server) يعمل على جهاز مخصص، وعميل (Client) يمكن تشغيله من أي جهاز آخر على نفس الشبكة.
+The AI Control System is a powerful solution for remotely managing Windows devices using AI. It comprises a server that runs on the host machine and a client that can be run from any other computer on the same network. This refactored version prioritizes stability, maintainability, and best practices in software architecture.
 
-### 🎯 الهدف من المشروع
+### 🎯 Project Goals
 
-- **التحكم الكامل عن بُعد** بأجهزة Windows
-- **معالجة الأوامر بالذكاء الاصطناعي** باستخدام Ollama و Open Interpreter
-- **تنفيذ المهام التلقائية** بدون تدخل بشري
-- **واجهة سهلة الاستخدام** عبر المتصفح أو سطر الأوامر
+- **Full Remote Control:** Execute commands and automate tasks on a Windows PC from anywhere on the network.
+- **AI-Powered Commands:** Use local AI models via Ollama and Open Interpreter to process natural language commands.
+- **Modular and Stable:** A professional code structure that is easy to maintain and extend.
+- **Simplified Setup:** A clear and standard installation process.
 
 ---
 
-## 🏗️ البنية التقنية
+## 🏗️ Technical Architecture
 
-### معمارية النظام
+### System Components
 
 ```
 ┌─────────────────────────┐         ┌─────────────────────────┐
-│   الجهاز الخادم (Server) │◄────────►│   الجهاز العميل (Client)│
-│                         │   LAN    │                         │
-│ • Windows 10/11         │         │ • أي نظام تشغيل         │
-│ • Intel i5-14400       │         │ • Python 3.8+           │
-│ • RTX 2060 (6GB)       │         │ • متصفح ويب             │
-│ • 24GB RAM             │         │                         │
-│                         │         │                         │
-│ المكونات:               │         │ المكونات:               │
-│ - Ollama Server        │         │ - Client Script         │
-│ - AI Models            │         │ - WebSocket Client      │
-│ - FastAPI Server       │         │ - Control Interface     │
-│ - Open Interpreter     │         │                         │
+│      Server Machine     │◄────────►│      Client Machine     │
+│  (Windows 10/11 Host)   │   LAN    │   (Any OS with Python)  │
+├─────────────────────────┤         ├─────────────────────────┤
+│ • Ollama Server         │         │ • Python Client Script  │
+│ • AI Language Models    │         │ • WebSocket Connection  │
+│ • FastAPI Python Server │         │ • Interactive/Auto Mode │
 └─────────────────────────┘         └─────────────────────────┘
 ```
 
-### التقنيات المستخدمة
+### Core Technologies
 
-| التقنية | الإصدار | الوظيفة |
-|---------|---------|---------|
-| Python | 3.11+ | لغة البرمجة الأساسية |
-| FastAPI | 0.104.1 | إطار عمل الخادم |
-| Uvicorn | 0.24.0 | خادم ASGI |
-| Ollama | Latest | تشغيل نماذج AI محلياً |
-| Open Interpreter | Latest | معالج الأوامر الذكي |
-| WebSockets | 12.0 | الاتصال في الوقت الفعلي |
-| PyAutoGUI | 0.9.54 | التحكم بالماوس والكيبورد |
+| Technology      | Role                    |
+|-----------------|-------------------------|
+| Python 3.8+     | Core programming language |
+| FastAPI         | Modern web framework for the server API |
+| Uvicorn         | High-performance ASGI server |
+| WebSockets      | Real-time, bidirectional communication |
+| Ollama          | Runs local large language models |
+| Open Interpreter| Executes natural language commands |
+| PyAutoGUI       | For GUI automation (mouse/keyboard) |
 
 ---
 
-## 📦 محتويات المشروع
+## 📂 New Project Structure
+
+The project has been refactored into a clean, standard Python project structure.
 
 ```
 AI_Control_System/
 │
-├── 📁 Server (الخادم)/
-│   ├── 📄 SERVER_CONTROL.bat     # واجهة التحكم بالخادم
-│   ├── 🐍 ai_server.py          # الخادم الرئيسي
-│   ├── 📁 ai_env/               # البيئة الافتراضية
-│   ├── 📁 logs/                 # سجلات النظام
-│   │   ├── install.log
-│   │   └── server.log
-│   ├── 📁 AI_Memory/            # نظام الذاكرة
-│   │   ├── config/
-│   │   ├── memory/
-│   │   ├── templates/
-│   │   └── documents/
-│   └── 📄 server_ip.txt         # IP الخادم المحفوظ
+├── 📁 src/
+│   ├── 📁 client/
+│   │   ├── 📄 main.py             # Client entry point
+│   │   ├── 📄 config.py           # Client configuration
+│   │   ├── 📄 connection.py       # WebSocket connection handler
+│   │   ├── 📁 core/
+│   │   │   └── 📄 executor.py     # Command execution logic
+│   │   └── 📄 requirements.txt   # Client Python dependencies
+│   │
+│   └── 📁 server/
+│       ├── 📄 main.py             # Server entry point (FastAPI app)
+│       ├── 📄 config.py           # Server configuration
+│       ├── 📁 api/
+│       │   └── 📄 endpoints.py    # API routes (HTTP & WebSocket)
+│       ├── 📁 core/
+│       │   └── 📄 controller.py    # AI controller logic
+│       ├── 📁 services/
+│       │   └── 📄 interpreter.py   # Ollama interaction logic
+│       └── 📄 requirements.txt   # Server Python dependencies
 │
-├── 📁 Client (العميل)/
-│   ├── 📄 CLIENT_CONTROL.bat    # واجهة التحكم بالعميل
-│   ├── 🐍 ai_client.py         # سكريبت العميل
-│   └── 📄 server_config.txt    # إعدادات الاتصال
+├── 📁 scripts/
+│   ├── 📄 install.bat           # Unified installer for dependencies
+│   ├── 📄 run_server.bat         # Script to launch the server
+│   └── 📄 run_client.bat         # Script to launch the client
 │
-└── 📄 README.md                 # هذا الملف
+├── 📁 logs/                      # Log files (created automatically)
+│
+└── 📄 README.md                  # This file
 ```
 
 ---
 
-## 🚀 التثبيت
+## 🚀 Installation
 
-### متطلبات النظام
+Follow these steps to set up the server and client.
 
-#### للخادم (Server):
-- **نظام التشغيل:** Windows 10/11 (64-bit)
-- **المعالج:** Intel Core i5 أو أفضل
-- **الذاكرة:** 16GB RAM (24GB موصى به)
-- **كرت الشاشة:** NVIDIA RTX 2060 أو أفضل (6GB VRAM)
-- **التخزين:** 50GB مساحة فارغة
-- **الشبكة:** اتصال LAN ثابت
+### Prerequisites
 
-#### للعميل (Client):
-- **نظام التشغيل:** Windows/Mac/Linux
-- **Python:** 3.8 أو أحدث
-- **الشبكة:** نفس شبكة الخادم
+#### Server Machine:
+- **OS:** Windows 10/11 (64-bit)
+- **Python:** 3.8 or newer
+- **Ollama:** Must be installed separately from [ollama.ai](https://ollama.ai/). After installing, pull a model:
+  ```sh
+  ollama pull qwen2.5-coder:7b
+  ```
+- **Hardware:** Recommended 16GB+ RAM and an NVIDIA GPU for good performance.
 
-### 📥 خطوات التثبيت
+#### Client Machine:
+- **OS:** Any (Windows, macOS, Linux)
+- **Python:** 3.8 or newer
 
-#### 1️⃣ تثبيت الخادم (Server)
+### 📥 Setup Instructions
 
-```batch
-# 1. انسخ ملفات المشروع إلى المجلد المطلوب
-C:\Users\cmver\OneDrive\سطح المكتب\M\
+1.  **Clone the repository:**
+    ```sh
+    git clone <repository_url>
+    cd AI_Control_System
+    ```
 
-# 2. شغّل كـ Administrator
-SERVER_CONTROL.bat
+2.  **Run the Installer:**
+    Open a terminal or command prompt and run the unified installer script:
+    ```sh
+    chmod +x scripts/install.sh
+    ./scripts/install.sh
+    ```
+    This script will guide you through setting up the Python virtual environments and installing the required dependencies for the server and/or client from their respective `requirements.txt` files.
 
-# 3. اختر من القائمة
-[1] INSTALL - للتثبيت الكامل (أول مرة)
-
-# 4. انتظر حتى اكتمال التثبيت (15-20 دقيقة)
-# سيتم تثبيت:
-# - Python 3.11
-# - Git
-# - Ollama
-# - المكتبات المطلوبة
-# - النماذج الذكية
-
-# 5. احفظ IP الخادم الذي يظهر
-# مثال: 192.168.100.102
-```
-
-#### 2️⃣ تثبيت العميل (Client)
-
-```batch
-# 1. على جهازك الشخصي، شغّل
-CLIENT_CONTROL.bat
-
-# 2. اختر من القائمة
-[1] SETUP - للإعداد
-
-# 3. أدخل IP الخادم
-Enter Server IP: 192.168.100.102
-
-# 4. انتظر تثبيت المكتبات
-```
+3.  **Configure the Client:**
+    After installation, the client needs to know the server's IP address. The first time you run the client, you may be prompted for it. Alternatively, you can create a `client_config.json` file in the root directory:
+    ```json
+    {
+      "server_ip": "192.168.1.100",
+      "server_port": 8000,
+      "websocket_port": 8000
+    }
+    ```
 
 ---
 
-## 💻 الاستخدام
+## 💻 Usage
 
-### 🎮 واجهة التحكم بالخادم (SERVER_CONTROL.bat)
+### 1. Start the Server
 
+On the host machine, make the script executable and run it:
+```sh
+chmod +x scripts/run_server.sh
+./scripts/run_server.sh
 ```
-================================================================================
-                          AI SERVER CONTROL CENTER
-================================================================================
+This will activate the server's environment, check for the Ollama service, and launch the FastAPI server.
 
-[1] INSTALL - Complete Server Setup (First Time)
-[2] START   - Start AI Server
-[3] STOP    - Stop AI Server  
-[4] STATUS  - Check Server Status
-[5] UPDATE  - Update Models
-[6] MEMORY  - Setup AI Memory System
-[7] FIX     - Fix Common Issues
-[8] INFO    - Show Server Information
-[0] EXIT    - Close Control Center
+### 2. Run the Client
+
+On your remote machine, make the script executable and run it:
+```sh
+chmod +x scripts/run_client.sh
+./scripts/run_client.sh
 ```
+This will present a menu to run the client in one of three modes:
+- **Automatic Mode:** Connects and waits passively for commands from the server.
+- **Interactive Mode:** Provides a command prompt to send commands to the server.
+- **Single Command Mode:** Sends one specific command and then exits.
 
-#### شرح الخيارات:
+### Quick Usage Example
 
-| الخيار | الوظيفة | متى تستخدمه |
-|--------|---------|-------------|
-| **[1] INSTALL** | تثبيت كامل للنظام | أول مرة فقط |
-| **[2] START** | تشغيل الخادم | كل مرة تريد البدء |
-| **[3] STOP** | إيقاف الخادم | عند الانتهاء |
-| **[4] STATUS** | فحص حالة النظام | للتأكد من العمل |
-| **[5] UPDATE** | تحديث/إضافة نماذج AI | لتحسين الأداء |
-| **[6] MEMORY** | إعداد نظام الذاكرة | للمشاريع المتقدمة |
-| **[7] FIX** | إصلاح المشاكل | عند حدوث أخطاء |
-| **[8] INFO** | معلومات النظام | لمعرفة التفاصيل |
+To send a single command to the server to open Notepad, you can use the "Single Command" mode:
+1.  Run `./scripts/run_client.sh`.
+2.  Choose option `[3] Send a Single Command`.
+3.  When prompted, enter the command: `open notepad`
 
-### 🎮 واجهة التحكم بالعميل (CLIENT_CONTROL.bat)
-
-```
-================================================================================
-                          AI CLIENT CONTROL CENTER
-================================================================================
-
-[1] SETUP   - Install Client & Connect to Server
-[2] CONNECT - Connect to AI Server
-[3] TEST    - Test Server Connection
-[4] CONTROL - Start Remote Control Session
-[5] COMMAND - Send Single Command
-[6] MONITOR - View Active Sessions
-[7] UPDATE  - Update Client Software
-[8] HELP    - Show Help & Commands
-[0] EXIT    - Close Control Center
-```
-
-#### شرح الخيارات:
-
-| الخيار | الوظيفة | الاستخدام |
-|--------|---------|-----------|
-| **[1] SETUP** | إعداد العميل | أول مرة فقط |
-| **[2] CONNECT** | الاتصال بالخادم | للاتصال المباشر |
-| **[3] TEST** | اختبار الاتصال | للتأكد من الشبكة |
-| **[4] CONTROL** | جلسة تحكم تفاعلية | للتحكم الكامل |
-| **[5] COMMAND** | إرسال أمر واحد | للأوامر السريعة |
-| **[6] MONITOR** | مراقبة الجلسات | لمعرفة الحالة |
-| **[7] UPDATE** | تحديث المكتبات | للصيانة |
-| **[8] HELP** | المساعدة | لمعرفة الأوامر |
+The client will send the command to the server, the server will process it, and the client on the host machine will execute the action.
 
 ---
 
-## 📡 نقاط الوصول (Endpoints)
+## ✅ Running Tests
 
-### HTTP Endpoints
+This project uses `pytest` for testing. The necessary dependencies are included in the `requirements.txt` files.
 
-| المسار | النوع | الوظيفة | مثال |
-|--------|-------|---------|------|
-| `/` | GET | الصفحة الرئيسية | http://192.168.100.102:8000 |
-| `/status` | GET | حالة الخادم | http://192.168.100.102:8000/status |
-| `/process` | POST | معالجة أمر | `{"command": "open chrome"}` |
-| `/history` | GET | سجل الأوامر | http://192.168.100.102:8000/history |
-| `/health` | GET | فحص صحة النظام | http://192.168.100.102:8000/health |
-
-### WebSocket Endpoint
-
-```javascript
-// الاتصال عبر WebSocket
-ws://192.168.100.102:8000/ws
-
-// رسائل WebSocket
-{
-    "type": "command",
-    "command": "open notepad",
-    "context": {}
-}
-```
-
----
-
-## 🎯 الأوامر المتاحة
-
-### أوامر أساسية
-
-| الأمر | الوظيفة | مثال |
-|-------|---------|------|
-| `open chrome` | فتح متصفح Chrome | "Open Chrome" |
-| `open notepad` | فتح المفكرة | "Open Notepad" |
-| `open youtube` | فتح YouTube | "Go to YouTube" |
-| `take screenshot` | أخذ لقطة شاشة | "Take a screenshot" |
-| `open task manager` | فتح مدير المهام | "Open Task Manager" |
-| `open file explorer` | فتح مستكشف الملفات | "Open File Explorer" |
-
-### أوامر النظام
-
-| الأمر | الوظيفة | احتياطات |
-|-------|---------|----------|
-| `shutdown` | إيقاف الجهاز | يتم بعد 60 ثانية |
-| `restart` | إعادة تشغيل | يتم بعد 60 ثانية |
-| `lock screen` | قفل الشاشة | فوري |
-| `system info` | معلومات النظام | آمن |
-
-### أوامر متقدمة
-
-```python
-# أمثلة على أوامر معقدة
-"Create a folder called Projects on desktop"
-"Open Chrome and search for Python tutorials"
-"Take a screenshot and save it as report.png"
-"List all files in the current directory"
-"Check CPU and memory usage"
-```
-
----
-
-## 🛠️ نماذج AI المتاحة
-
-### للأجهزة مع RTX 2060 (6GB VRAM)
-
-| النموذج | الحجم | الاستخدام | الأداء |
-|---------|-------|-----------|--------|
-| **qwen2.5-coder:7b** | 4.7GB | البرمجة والأكواد | ⭐⭐⭐⭐⭐ |
-| **llama3.2:3b** | 2.0GB | عام وسريع | ⭐⭐⭐⭐ |
-| **mistral:7b** | 4.1GB | متوازن | ⭐⭐⭐⭐ |
-| **deepseek-coder:6.7b** | 3.8GB | برمجة متقدمة | ⭐⭐⭐⭐⭐ |
-| **phi3:mini** | 2.3GB | خفيف وسريع | ⭐⭐⭐ |
-
-### تثبيت نموذج جديد
-
-```batch
-# من قائمة SERVER_CONTROL
-[5] UPDATE - Update Models
-
-# أو مباشرة
-ollama pull model_name
-```
-
----
-
-## 🔧 حل المشاكل
-
-### المشكلة 1: الخادم لا يعمل
-
-```batch
-# الحل
-1. تأكد من تشغيل كـ Administrator
-2. استخدم خيار [7] FIX
-3. تأكد من وجود ai_server.py
-4. راجع logs/server.log
-```
-
-### المشكلة 2: لا يمكن الاتصال من العميل
-
-```batch
-# الحل
-1. تأكد أن الجهازين على نفس الشبكة
-2. افحص Windows Firewall:
-   netsh advfirewall firewall add rule name="AI Server" dir=in action=allow protocol=TCP localport=8000
-3. جرب ping للخادم:
-   ping 192.168.100.102
-```
-
-### المشكلة 3: Ollama لا يعمل
-
-```batch
-# الحل
-1. أوقف العمليات:
-   taskkill /F /IM ollama.exe
-2. أعد التشغيل:
-   set OLLAMA_HOST=0.0.0.0
-   ollama serve
-```
-
-### المشكلة 4: Python غير موجود
-
-```batch
-# الحل
-1. حمّل Python 3.11 من python.org
-2. تأكد من إضافته لـ PATH
-3. أعد تشغيل الجهاز
-```
-
----
-
-## 📊 مراقبة الأداء
-
-### من المتصفح
-
-```
-http://192.168.100.102:8000/status
-```
-
-### من سطر الأوامر
-
-```python
-import requests
-response = requests.get("http://192.168.100.102:8000/status")
-print(response.json())
-```
-
-### السجلات
-
-```
-# سجل التثبيت
-logs/install.log
-
-# سجل الخادم
-logs/server.log
-
-# سجل الأوامر
-عبر /history endpoint
-```
-
----
-
-## 🔐 الأمان
-
-### إجراءات الأمان المطبقة
-
-1. **CORS Configuration** - السماح للأصول المحددة فقط
-2. **Firewall Rules** - قواعد جدار حماية Windows
-3. **Local Network Only** - يعمل على الشبكة المحلية فقط
-4. **Command Validation** - التحقق من الأوامر الخطرة
-5. **Logging** - تسجيل كل العمليات
-
-### توصيات إضافية
-
-```batch
-# 1. استخدم VPN للاتصال الآمن
-# 2. غيّر المنفذ الافتراضي إذا لزم
-# 3. أضف كلمة مرور للـ API
-# 4. حدد IP addresses المسموحة
-```
-
----
-
-## 🚦 سير العمل النموذجي
-
-```mermaid
-graph LR
-    A[بدء الخادم] --> B[تشغيل Ollama]
-    B --> C[تحميل النموذج]
-    C --> D[بدء FastAPI]
-    D --> E[الاستماع على :8000]
+1.  **Activate your virtual environment** (for either server or client).
+    ```batch
+    # For server tests
+    call venv_server\Scripts\activate.bat
     
-    F[العميل يتصل] --> G[WebSocket/HTTP]
-    G --> E
-    E --> H[معالجة الأمر بـ AI]
-    H --> I[تنفيذ الأمر]
-    I --> J[إرجاع النتيجة]
-    J --> F
-```
+    # For client tests
+    call venv_client\Scripts\activate.bat
+    ```
+
+2.  **Run pytest:**
+    From the root of the project directory, run:
+    ```sh
+    pytest
+    ```
+    This will automatically discover and run all the tests in the `tests/` directory. The integration test will be skipped by default. To run it, you need to explicitly include it:
+    ```sh
+    pytest -m integration
+    ```
+    **Note:** The integration test will start a live server, so ensure port 8000 is free.
 
 ---
 
-## 📈 خطط التطوير المستقبلية
+## 📡 API Endpoints
 
-- [ ] إضافة واجهة ويب متقدمة
-- [ ] دعم المصادقة والتشفير
-- [ ] التحكم بأجهزة متعددة
-- [ ] تسجيل الماكرو وإعادة التشغيل
-- [ ] التكامل مع المساعدات الصوتية
-- [ ] دعم Linux و macOS
-- [ ] تطبيق موبايل للتحكم
+The server exposes the following endpoints, accessible at `http://<server_ip>:8000`.
 
----
-
-## 🤝 المساهمة
-
-نرحب بالمساهمات! يرجى:
-
-1. Fork المشروع
-2. إنشاء فرع للميزة (`git checkout -b feature/AmazingFeature`)
-3. Commit التغييرات (`git commit -m 'Add some AmazingFeature'`)
-4. Push للفرع (`git push origin feature/AmazingFeature`)
-5. فتح Pull Request
+| Path       | Method | Description                               |
+|------------|--------|-------------------------------------------|
+| `/`        | GET    | A simple HTML status page.                |
+| `/status`  | GET    | Returns detailed server status as JSON.   |
+| `/history` | GET    | Retrieves the history of processed commands. |
+| `/process` | POST   | Submits a command for processing via HTTP.|
+| `/health`  | GET    | A simple health check endpoint.           |
+| `/ws`      | WebSocket| The endpoint for real-time communication.|
 
 ---
 
-## 📝 الترخيص
+## 🌟 Future Improvements
 
-هذا المشروع مرخص تحت رخصة MIT - انظر ملف [LICENSE](LICENSE) للتفاصيل.
-
----
-
-## 👨‍💻 المطور
-
-**محمد عبدالله القحطاني**
-
-- 📧 Email: moha.alnamlan@gmail.com
-- 📱 WhatsApp: +966540601467
-- 💼 LinkedIn: [mohammed-abdullah](https://www.linkedin.com/in/mohammed-abdullah-2a7175338/)
+- [ ] Add a web interface for easier control.
+- [ ] Implement user authentication and encrypted communication.
+- [ ] Support for managing multiple clients from the server.
+- [ ] Add advanced macro recording and playback.
 
 ---
 
-## 🙏 الشكر والتقدير
+## 🙏 Acknowledgements
 
-- **OpenAI** - لتقنيات الذكاء الاصطناعي
-- **Anthropic** - للمساعدة في التطوير
-- **Ollama Team** - لتوفير النماذج المحلية
-- **FastAPI** - لإطار العمل الممتاز
-- **مجتمع Python** - للمكتبات والأدوات
-
----
-
-## 📞 الدعم الفني
-
-### للمساعدة السريعة:
-
-1. **راجع قسم** [حل المشاكل](#-حل-المشاكل)
-2. **افحص السجلات** في مجلد `logs/`
-3. **استخدم خيار** `[7] FIX` في SERVER_CONTROL
-4. **تواصل عبر** WhatsApp أو Email
-
-### معلومات مفيدة:
-
-```python
-# فحص سريع للنظام
-import platform
-import psutil
-
-print(f"OS: {platform.system()} {platform.release()}")
-print(f"Python: {platform.python_version()}")
-print(f"CPU: {psutil.cpu_count()} cores")
-print(f"RAM: {psutil.virtual_memory().total / (1024**3):.1f} GB")
-print(f"Network: {[i.address for i in psutil.net_if_addrs()['Ethernet']]}")
-```
-
----
+- **Ollama Team** - For making local LLMs accessible.
+- **FastAPI Community** - For an excellent web framework.
+- **The original author, Mohammed Abdullah Al-Qahtani**, for the innovative concept.
 
 <div align="center">
-
-**🌟 شكراً لاستخدامك AI Control System 🌟**
-
-صُنع بـ ❤️ في المملكة العربية السعودية
-
-[⬆ العودة للأعلى](#-ai-control-system---نظام-التحكم-الذكي-عن-بعد)
-
+  **This project was refactored to ensure stability and maintainability.**
 </div>
