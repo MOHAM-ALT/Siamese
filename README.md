@@ -110,7 +110,7 @@ Follow these steps to set up the server and client.
 - **Hardware:** Recommended 16GB+ RAM and an NVIDIA GPU for good performance.
 
 #### Client Machine:
-- **OS:** Any (Windows, macOS, Linux)
+- **OS:** Windows 10/11
 - **Python:** 3.8 or newer
 
 ### 📥 Setup Instructions
@@ -122,10 +122,9 @@ Follow these steps to set up the server and client.
     ```
 
 2.  **Run the Installer:**
-    Open a terminal or command prompt and run the unified installer script:
-    ```sh
-    chmod +x scripts/install.sh
-    ./scripts/install.sh
+    Open a Command Prompt and run the installer script:
+    ```batch
+    scripts\install.bat
     ```
     This script will guide you through setting up the Python virtual environments and installing the required dependencies for the server and/or client from their respective `requirements.txt` files.
 
@@ -145,19 +144,17 @@ Follow these steps to set up the server and client.
 
 ### 1. Start the Server
 
-On the host machine, make the script executable and run it:
-```sh
-chmod +x scripts/run_server.sh
-./scripts/run_server.sh
+On the host machine, run the server launch script:
+```batch
+scripts\run_server.bat
 ```
 This will activate the server's environment, check for the Ollama service, and launch the FastAPI server.
 
 ### 2. Run the Client
 
-On your remote machine, make the script executable and run it:
-```sh
-chmod +x scripts/run_client.sh
-./scripts/run_client.sh
+On your remote machine, run the client launch script:
+```batch
+scripts\run_client.bat
 ```
 This will present a menu to run the client in one of three modes:
 - **Automatic Mode:** Connects and waits passively for commands from the server.
@@ -167,7 +164,7 @@ This will present a menu to run the client in one of three modes:
 ### Quick Usage Example
 
 To send a single command to the server to open Notepad, you can use the "Single Command" mode:
-1.  Run `./scripts/run_client.sh`.
+1.  Run `scripts\run_client.bat`.
 2.  Choose option `[3] Send a Single Command`.
 3.  When prompted, enter the command: `open notepad`
 
