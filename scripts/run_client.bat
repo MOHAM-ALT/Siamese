@@ -1,23 +1,30 @@
 @echo off
-title AI Control Client
-color 0B
-cd /d "%~dp0..\."
+setlocal
 
-echo ================================================================================
-echo                           AI CONTROL CLIENT LAUNCHER
-echo ================================================================================
+set "DEBUG_LOG=logs\run_client_debug.log"
+if not exist "logs" mkdir "logs"
+del "%DEBUG_LOG%" >nul 2>&1
+
+echo --- AI Control Client Launcher ---
+echo Detailed debug output will be saved to %DEBUG_LOG%
 echo.
 
-rem Check for virtual environment
-if not exist "venv_client\Scripts\activate.bat" (
-    echo [ERROR] Client virtual environment not found.
-    echo Please run 'scripts\install.bat' first to set up the client.
-    pause
-    exit
-)
+(
+    echo [INFO] Changing to project root directory...
+    cd /d "%~dp0..\"
 
-echo Activating client environment...
-call venv_client\Scripts\activate.bat
+    echo [STEP] Checking for client virtual environment...
+    if not exist "venv_client\Scripts\activate.bat" (
+        echo [ERROR] Client virtual environment not found.
+        echo Please run 'scripts\install.bat' first.
+        goto :error_exit
+    )
+    echo [SUCCESS] Client venv found.
+
+    echo [STEP] Activating environment...
+    call venv_client\Scripts\activate.bat
+
+) >> "%DEBUG_LOG%" 2>>&1
 
 :MENU
 cls
@@ -25,8 +32,8 @@ echo ===========================================================================
 echo                           CLIENT LAUNCH MENU
 echo ================================================================================
 echo.
-echo   [1] Connect in Automatic Mode (waits for server commands)
-echo   [2] Start Interactive Mode (send commands from here)
+echo   [1] Connect in Automatic Mode
+echo   [2] Start Interactive Mode
 echo   [3] Send a Single Command
 echo.
 echo   [0] Exit
@@ -37,38 +44,44 @@ set /p choice="Select a mode [0-3]: "
 if "%choice%"=="1" goto AUTO
 if "%choice%"=="2" goto INTERACTIVE
 if "%choice%"=="3" goto SINGLE
-if "%choice%"=="0" goto QUIT
+if "%choice%"=="0" goto :EOF
 
 echo Invalid option.
 pause
 goto MENU
 
 :AUTO
-echo.
-echo Starting client in Automatic Mode...
-python -m src.client.main auto
+echo [ACTION] Starting client in Automatic Mode... >> "%DEBUG_LOG%"
+python -m src.client.main auto >> "%DEBUG_LOG%" 2>>&1
 pause
 goto MENU
 
 :INTERACTIVE
-echo.
-echo Starting client in Interactive Mode...
-python -m src.client.main interactive
+echo [ACTION] Starting client in Interactive Mode... >> "%DEBUG_LOG%"
+python -m src.client.main interactive >> "%DEBUG_LOG%" 2>>&1
 pause
 goto MENU
 
 :SINGLE
-echo.
+echo [ACTION] Starting client in Single Command Mode... >> "%DEBUG_LOG%"
 set /p cmd_string="Enter the command to send: "
 if "%cmd_string%"=="" (
     echo No command entered.
     pause
     goto MENU
 )
-python -m src.client.main command "%cmd_string%"
+echo [COMMAND] %cmd_string% >> "%DEBUG_LOG%"
+python -m src.client.main command "%cmd_string%" >> "%DEBUG_LOG%" 2>>&1
 pause
 goto MENU
 
-:QUIT
-call venv_client\Scripts\deactivate.bat
-exit
+:error_exit
+echo.
+echo !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+echo.
+echo   An error occurred during script initialization.
+echo   Please check the details in the log file: %DEBUG_LOG%
+echo.
+echo !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+pause
+exit /b 1

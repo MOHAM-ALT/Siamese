@@ -1,153 +1,104 @@
 @echo off
-title AI Control System - Windows Installer
-color 0E
-chcp 65001 >nul 2>&1
-cd /d "%~dp0..\."
+setlocal
 
-echo ================================================================================
-echo               AI CONTROL SYSTEM - WINDOWS INSTALLER
-echo ================================================================================
-echo This script will set up the Python virtual environments for the Server and Client.
-echo.
-echo IMPORTANT:
-echo - This script must be run from the project's root directory.
-echo - Ensure you have Python 3.8+ installed and added to your PATH.
-echo - For the server, you must install Ollama separately from https://ollama.ai/
+:: Set a dedicated log file for debugging this script
+set "DEBUG_LOG=logs\install_debug.log"
+
+:: Create logs directory if it doesn't exist
+if not exist "logs" mkdir "logs"
+del "%DEBUG_LOG%" >nul 2>&1
+
+echo --- AI Control System Windows Installer ---
+echo This script will install all dependencies for the Server and Client.
+echo Detailed progress will be saved to %DEBUG_LOG%
 echo.
 pause
-cls
 
-:MENU
-echo ================================================================================
-echo                           INSTALLATION MENU
-echo ================================================================================
-echo.
-echo   [1] Install Server Dependencies
-echo   [2] Install Client Dependencies
-echo   [3] Install BOTH Server and Client Dependencies
-echo.
-echo   [0] Exit
-echo.
-echo ================================================================================
-set /p choice="Select an option [0-3]: "
+(
+    echo [INFO] Changing to project root directory...
+    cd /d "%~dp0..\"
 
-if "%choice%"=="1" (
-    call :INSTALL_SERVER
-    goto END
-)
-if "%choice%"=="2" (
-    call :INSTALL_CLIENT
-    goto END
-)
-if "%choice%"=="3" (
-    call :INSTALL_SERVER
-    call :INSTALL_CLIENT
-    goto BOTH_DONE
-)
-if "%choice%"=="0" exit
-
-echo Invalid option.
-pause
-goto MENU
-
-:INSTALL_SERVER
-echo.
-echo ================================================================================
-echo                        INSTALLING SERVER DEPENDENCIES
-echo ================================================================================
-echo.
-echo [1/3] Checking for Python...
-python --version >nul 2>&1
-if errorlevel 1 (
-    echo [ERROR] Python not found. Please install it and add it to your PATH.
-    pause
-    exit /b 1
-)
-echo [OK] Python found.
-
-echo.
-echo [2/3] Creating virtual environment for the server...
-if not exist "venv_server" (
-    python -m venv venv_server
+    echo [STEP] Checking for Python...
+    python --version
     if errorlevel 1 (
-        echo [ERROR] Could not create server virtual environment.
-        pause
-        exit /b 1
+        echo [ERROR] Python not found in PATH.
+        goto :error_exit
     )
-    echo [OK] Server virtual environment created at .\venv_server
-) else (
-    echo [OK] Server virtual environment already exists.
-)
+    echo [SUCCESS] Python found.
+
+    :: --- Server Installation ---
+    echo.
+    echo [STEP] Setting up Server...
+    echo [ACTION] Creating server virtual environment...
+    if not exist "venv_server" (
+        python -m venv venv_server
+        if errorlevel 1 (
+            echo [ERROR] Failed to create server virtual environment.
+            goto :error_exit
+        )
+    )
+    echo [SUCCESS] Server venv exists.
+
+    echo [ACTION] Installing server dependencies...
+    call venv_server\Scripts\activate.bat
+    echo --- Upgrading pip... ---
+    python -m pip install --upgrade pip
+    echo --- Installing server packages... ---
+    python -m pip install -r src\server\requirements.txt
+    if errorlevel 1 (
+        echo [ERROR] Failed to install server packages.
+        call venv_server\Scripts\deactivate.bat
+        goto :error_exit
+    )
+    call venv_server\Scripts\deactivate.bat
+    echo [SUCCESS] Server dependencies installed.
+
+    :: --- Client Installation ---
+    echo.
+    echo [STEP] Setting up Client...
+    echo [ACTION] Creating client virtual environment...
+    if not exist "venv_client" (
+        python -m venv venv_client
+        if errorlevel 1 (
+            echo [ERROR] Failed to create client virtual environment.
+            goto :error_exit
+        )
+    )
+    echo [SUCCESS] Client venv exists.
+
+    echo [ACTION] Installing client dependencies...
+    call venv_client\Scripts\activate.bat
+    echo --- Upgrading pip... ---
+    python -m pip install --upgrade pip
+    echo --- Installing client packages... ---
+    python -m pip install -r src\client\requirements.txt
+    if errorlevel 1 (
+        echo [ERROR] Failed to install client packages.
+        call venv_client\Scripts\deactivate.bat
+        goto :error_exit
+    )
+    call venv_client\Scripts\deactivate.bat
+    echo [SUCCESS] Client dependencies installed.
+
+) >> "%DEBUG_LOG%" 2>>&1
 
 echo.
-echo [3/3] Installing packages from src/server/requirements.txt...
-call venv_server\Scripts\activate.bat
-python -m pip install --upgrade pip >nul
-python -m pip install -r src\server\requirements.txt
-if errorlevel 1 (
-    echo [ERROR] Failed to install server packages. Check requirements and connection.
-    pause
-    exit /b 1
-)
-call venv_server\Scripts\deactivate.bat
-echo [OK] Server packages installed successfully.
-echo [REMINDER] Don't forget to install Ollama and pull your desired models!
+echo =================================================================
 echo.
+echo   Installation completed successfully!
+echo   You can now run the server and client using the run scripts.
+echo.
+echo =================================================================
+pause
 exit /b 0
 
-:INSTALL_CLIENT
+:error_exit
 echo.
-echo ================================================================================
-echo                        INSTALLING CLIENT DEPENDENCIES
-echo ================================================================================
+echo !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 echo.
-echo [1/3] Checking for Python...
-python --version >nul 2>&1
-if errorlevel 1 (
-    echo [ERROR] Python not found. Please install it and add it to your PATH.
-    pause
-    exit /b 1
-)
-echo [OK] Python found.
-
+echo   An error occurred during installation.
+echo   Please check the details in the log file: %DEBUG_LOG%
 echo.
-echo [2/3] Creating virtual environment for the client...
-if not exist "venv_client" (
-    python -m venv venv_client
-    if errorlevel 1 (
-        echo [ERROR] Could not create client virtual environment.
-        pause
-        exit /b 1
-    )
-    echo [OK] Client virtual environment created at .\venv_client
-) else (
-    echo [OK] Client virtual environment already exists.
-)
-
-echo.
-echo [3/3] Installing packages from src/client/requirements.txt...
-call venv_client\Scripts\activate.bat
-python -m pip install --upgrade pip >nul
-python -m pip install -r src\client\requirements.txt
-if errorlevel 1 (
-    echo [ERROR] Failed to install client packages. Check requirements and connection.
-    pause
-    exit /b 1
-)
-call venv_client\Scripts\deactivate.bat
-echo [OK] Client packages installed successfully.
-echo.
-exit /b 0
-
-:BOTH_DONE
-echo.
-echo ================================================================================
-echo                  BOTH SERVER AND CLIENT ARE SET UP!
-echo ================================================================================
-echo.
-echo To start the server, run: scripts\run_server.bat
-echo To start the client, run: scripts\run_client.bat
-echo.
+echo !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 pause
-
-:END
+exit /b 1

@@ -172,6 +172,21 @@ The client will send the command to the server, the server will process it, and 
 
 ---
 
+## 🛠️ Troubleshooting
+
+If you encounter issues where scripts crash or close immediately, check the `logs` directory. The new scripts create detailed debug logs that track every command they execute:
+- `logs\install_debug.log`: Created when running `scripts\install.bat`.
+- `logs\run_server_debug.log`: Created when running `scripts\run_server.bat`.
+- `logs\run_client_debug.log`: Created when running `scripts\run_client.bat`.
+
+These logs will show the exact command that failed, helping to pinpoint the problem.
+
+Additionally, if the Python application itself crashes, it will attempt to create:
+- `logs\server_crash.log`
+- `logs\client_crash.log`
+
+---
+
 ## ✅ Running Tests
 
 This project uses `pytest` for testing. The necessary dependencies are included in the `requirements.txt` files.

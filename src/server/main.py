@@ -55,7 +55,7 @@ register_endpoints(app, ai_controller)
 
 # --- Main Execution ---
 
-if __name__ == "__main__":
+def main():
     # Get network information for display
     hostname = socket.gethostname()
     try:
@@ -83,17 +83,28 @@ if __name__ == "__main__":
     logger.info(f"Server accessible at: http://{local_ip}:8000")
 
     # Run the server
+    uvicorn.run(
+        app,
+        host="0.0.0.0",
+        port=8000,
+        log_level="info",
+        access_log=True
+    )
+
+if __name__ == "__main__":
     try:
-        uvicorn.run(
-            app,
-            host="0.0.0.0",
-            port=8000,
-            log_level="info",
-            access_log=True
-        )
+        main()
     except KeyboardInterrupt:
         logger.info("Server stopped by user.")
     except Exception as e:
-        logger.error(f"Server failed to start: {e}")
+        # Log the exception to a dedicated crash file
+        crash_log_path = os.path.join('logs', 'server_crash.log')
+        with open(crash_log_path, 'a') as f:
+            import traceback
+            f.write(f"--- CRASH AT {datetime.now()} ---\n")
+            traceback.print_exc(file=f)
+            f.write("\n")
+        logger.error(f"A critical error occurred. Details saved to {crash_log_path}")
+        print(f"A critical error occurred. Details have been saved to {crash_log_path}")
     finally:
         logger.info("Server shutdown complete.")

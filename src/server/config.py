@@ -19,10 +19,10 @@ def configure_interpreter(interpreter):
         interpreter.llm.api_base = "http://localhost:11434"
         interpreter.auto_run = False
         interpreter.safe_mode = 'off'
-        interpreter.system_message = \"\"\"You are an AI assistant for remote computer control.
+        interpreter.system_message = """You are an AI assistant for remote computer control.
         Analyze user commands and provide safe, executable instructions.
         Focus on Windows system commands and automation tasks.
-        Always prioritize safety and ask for confirmation on destructive operations.\"\"\"
+        Always prioritize safety and ask for confirmation on destructive operations."""
         logging.info("Open Interpreter configured successfully")
         return interpreter
     except Exception as e:
