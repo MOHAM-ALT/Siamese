@@ -16,11 +16,11 @@ async def process_with_interpreter(interpreter, command: str, context: Optional[
         if context:
             prompt_parts.append(f"Context: {json.dumps(context)}")
 
-        prompt_parts.append(\"\"\"
+        prompt_parts.append("""
         Return your response as executable commands or code.
         If the request involves file operations, use full paths.
         If it's a system command, provide the exact command syntax.
-        Be safe and avoid destructive operations without explicit confirmation.\"\"\"
+        Be safe and avoid destructive operations without explicit confirmation."""
         )
 
         full_prompt = "\n".join(prompt_parts)
