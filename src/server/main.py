@@ -1,7 +1,9 @@
+# src/server/main.py
 import os
 import sys
 import socket
 import uvicorn
+from datetime import datetime
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -34,24 +36,24 @@ app.add_middleware(
 # --- Dependency Initialization ---
 
 # Attempt to import and configure the Open Interpreter
+interpreter_instance = None
 try:
     import interpreter
     interpreter_instance = configure_interpreter(interpreter)
-    logger.info("Open Interpreter loaded and configured.")
+    if interpreter_instance:
+        logger.info("✅ Open Interpreter loaded and configured.")
+    else:
+        logger.warning("⚠️ Open Interpreter configuration failed.")
 except ImportError:
-    interpreter_instance = None
-    logger.warning("Open Interpreter not available. Running in basic mode.")
+    logger.warning("⚠️ Open Interpreter not available. Running in basic mode.")
 except Exception as e:
-    interpreter_instance = None
-    logger.error(f"Failed to configure Open Interpreter: {e}")
-
+    logger.error(f"❌ Failed to configure Open Interpreter: {e}")
 
 # Initialize the main controller
 ai_controller = AIController(interpreter_instance=interpreter_instance)
 
 # Register API endpoints
 register_endpoints(app, ai_controller)
-
 
 # --- Main Execution ---
 
@@ -65,7 +67,7 @@ def main():
 
     # Display server info
     print("\n" + "="*80)
-    print("🚀 AI CONTROL SERVER v3.0 (Refactored)")
+    print("🚀 AI CONTROL SERVER v3.0 (Enhanced)")
     print("="*80)
     print(f"🌐 Local Access:    http://localhost:8000")
     print(f"🌐 Network Access:  http://{local_ip}:8000")
@@ -73,8 +75,14 @@ def main():
     print(f"📊 Status Endpoint: http://{local_ip}:8000/status")
     print("="*80)
     print(f"📁 Working Directory: {os.getcwd()}")
-    print(f"🤖 Open Interpreter: {'✓ Available' if interpreter_instance else '✗ Not Available'}")
+    print(f"🤖 Open Interpreter: {'✅ Available' if interpreter_instance else '❌ Not Available'}")
     print(f"📝 Logs: {os.path.join(os.getcwd(), 'logs')}")
+    print("="*80)
+    print("💡 Server Features:")
+    print("   - Multi-AI Model Support (Ollama, OpenAI, Anthropic)")
+    print("   - Advanced Command Processing")
+    print("   - Real-time WebSocket Communication")
+    print("   - Comprehensive Logging & Error Handling")
     print("="*80)
     print("Press Ctrl+C to stop the server")
     print("="*80)
@@ -83,28 +91,34 @@ def main():
     logger.info(f"Server accessible at: http://{local_ip}:8000")
 
     # Run the server
-    uvicorn.run(
-        app,
-        host="0.0.0.0",
-        port=8000,
-        log_level="info",
-        access_log=True
-    )
+    try:
+        uvicorn.run(
+            app,
+            host="0.0.0.0",
+            port=8000,
+            log_level="info",
+            access_log=True
+        )
+    except Exception as e:
+        logger.error(f"Server failed to start: {e}")
+        raise
 
 if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
         logger.info("Server stopped by user.")
+        print("\n👋 Server shutdown complete.")
     except Exception as e:
         # Log the exception to a dedicated crash file
         crash_log_path = os.path.join('logs', 'server_crash.log')
+        os.makedirs('logs', exist_ok=True)
         with open(crash_log_path, 'a') as f:
             import traceback
             f.write(f"--- CRASH AT {datetime.now()} ---\n")
             traceback.print_exc(file=f)
             f.write("\n")
-        logger.error(f"A critical error occurred. Details saved to {crash_log_path}")
-        print(f"A critical error occurred. Details have been saved to {crash_log_path}")
+        logger.error(f"💥 A critical error occurred. Details saved to {crash_log_path}")
+        print(f"💥 A critical error occurred. Details have been saved to {crash_log_path}")
     finally:
         logger.info("Server shutdown complete.")
