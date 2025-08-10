@@ -87,6 +87,7 @@ python -m pip install -r src\server\requirements.txt
 if errorlevel 1 (
     echo [ERROR] Failed to install server packages. Check requirements and connection.
     pause
+    call venv_server\Scripts\deactivate.bat
     exit /b 1
 )
 call venv_server\Scripts\deactivate.bat
@@ -132,6 +133,7 @@ python -m pip install -r src\client\requirements.txt
 if errorlevel 1 (
     echo [ERROR] Failed to install client packages. Check requirements and connection.
     pause
+    call venv_client\Scripts\deactivate.bat
     exit /b 1
 )
 call venv_client\Scripts\deactivate.bat
@@ -151,3 +153,6 @@ echo.
 pause
 
 :END
+echo.
+echo Script has finished. Press any key to close this window...
+pause

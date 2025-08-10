@@ -38,5 +38,7 @@ echo.
 
 python -m src.server.main
 
-rem Deactivate venv on exit (this part might not execute if Ctrl+C is used)
+echo.
+echo Server script has finished. Press any key to close this window...
+pause
 call venv_server\Scripts\deactivate.bat

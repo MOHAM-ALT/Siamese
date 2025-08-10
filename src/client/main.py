@@ -184,8 +184,14 @@ def main():
     try:
         client.start(mode, command)
     except Exception as e:
+        crash_log_path = os.path.join('logs', 'client_crash.log')
+        with open(crash_log_path, 'a') as f:
+            import traceback
+            f.write(f"--- CRASH AT {datetime.now()} ---\n")
+            traceback.print_exc(file=f)
+            f.write("\n")
         logger.fatal(f"A fatal error occurred: {e}", exc_info=True)
-        print(f"💥 A fatal error occurred: {e}")
+        print(f"💥 A fatal error occurred. Details saved to {crash_log_path}")
 
 if __name__ == "__main__":
     main()
